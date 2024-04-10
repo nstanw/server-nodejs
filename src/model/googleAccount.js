@@ -22,6 +22,6 @@ const googleAccountSchema = new mongoose.Schema({
 });
 
 // Create the Google account model
-const GoogleAccount = mongoose.model('GoogleAccount', googleAccountSchema);
+const GoogleAccount = mongoose.model('Acc', googleAccountSchema);
 
 module.exports = GoogleAccount;

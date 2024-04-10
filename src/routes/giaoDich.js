@@ -3,6 +3,6 @@ const giaoDichController = require("../controller/giaoDich");
 const router = express.Router();
 
 router.post("/", giaoDichController.addGiaoDich);
-router.get("/getAll", giaoDichController.getAllGiaoDich);
+router.get("/", giaoDichController.getAllGiaoDich);
 
 module.exports = router;

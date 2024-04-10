@@ -1,5 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const GiaoDich = require("./model/giaoDich");
+
 const cord = require("cors");
 const port = 5000;
 const app = express();
@@ -45,6 +47,7 @@ app.post("/uploads", upload.array("images", 12), async (req, res, next) => {
     const baseUrl = `${req.protocol}://${req.get("host")}`;
 
     // Create imgs from files
+    // @ts-ignore
     const images = req.files.map(
       (file) => baseUrl + "/" + file.path.replaceAll("\\", "/")
     );
@@ -62,7 +65,7 @@ app.post("/uploads", upload.array("images", 12), async (req, res, next) => {
 });
 
 const uri =
-  "mongodb+srv://langthambca:accban123@aow.gddjzij.mongodb.net/transaction";
+  "mongodb+srv://langthambca:accban123@aow.gddjzij.mongodb.net/aow3";
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -73,10 +76,11 @@ app.use(express.urlencoded({ extended: true }));
 
 const userRouter = require("./routes/user");
 const giaoDichRouter = require("./routes/giaoDich");
-const GiaoDich = require("./model/giaoDich");
+const googleAccountsRouter = require("./routes/googleAccounts");
 
-app.use("/api/user", userRouter);
+app.use("/api/users", userRouter);
 app.use("/api/giaoDichs", giaoDichRouter);
+app.use("/api/googleAccounts", googleAccountsRouter);
 
 const startServer = async () => {
   try {
