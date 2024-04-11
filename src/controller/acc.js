@@ -3,7 +3,18 @@ const GoogleAccount = require("../model/googleAccount"); // Đảm bảo rằng 
 // Lấy tất cả googleAccounts
 exports.getAllGoogleAccounts = async (req, res) => {
   try {
-    const googleAccounts = await GoogleAccount.find();
+    const {
+      user,
+      page = 1,
+      limit = 100,
+      sort = "createdAt",
+      order = "desc",
+    } = req.query;
+
+    const googleAccounts = await GoogleAccount.find(user ? { user } : {})
+      .sort({ [sort]: order === "desc" ? -1 : 1 })
+      .skip((page - 1) * limit)
+      .limit(limit);
     res.send(googleAccounts);
   } catch (error) {
     res.status(500).send(error);
@@ -50,4 +61,3 @@ exports.deleteGoogleAccount = async (req, res) => {
     res.status(500).send(error);
   }
 };
-
