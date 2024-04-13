@@ -2,12 +2,54 @@ const GoogleAccount = require("../model/googleAccount");
 const User = require("../model/user");
 const GiaoDich = require("../model/giaoDich"); // Đảm bảo rằng bạn đã import GiaoDich từ đúng đường dẫn
 
+exports.getGiaoDichByUser = async (req, res) => {
+  try {
+    let query = {};
+    if (req.params.userId) {
+      query = {
+        user: { $eq: req.params.userId },
+      };
+    }
+    const giaoDichs = await GiaoDich.find(query)
+      .populate("googleAccount")
+      .sort({ ngayGiaoDich: -1 });
+    res.send(giaoDichs);
+  } catch (error) {
+    console.log(error);
+    res.status(500).send(error);
+  }
+};
+
 // Lấy tất cả GiaoDichs
 exports.getAllGiaoDich = async (req, res) => {
   try {
-    const giaoDichs = await GiaoDich.find({})
+    let query = {};
+
+    if (req.query.startDate && req.query.endDate) {
+      const startDate = new Date(req.query.startDate).setHours(0, 0, 0, 0);
+      const endDate = new Date(req.query.endDate).setHours(23, 59, 59, 999);
+
+      query = {
+        ngayGiaoDich: {
+          $gte: startDate,
+          $lte: endDate,
+        },
+      };
+    } else {
+      // const currentDate = new Date().setHours(0, 0, 0, 0);
+
+      // query = {
+      //   ngayGiaoDich: {
+      //     $gte: currentDate,
+      //     $lte: currentDate,
+      //   },
+      // };
+    }
+
+    const giaoDichs = await GiaoDich.find(query)
       .populate("user")
-      .populate("googleAccount");
+      .populate("googleAccount")
+      .sort({ ngayGiaoDich: -1 });
     res.send(giaoDichs);
   } catch (error) {
     console.log(error);

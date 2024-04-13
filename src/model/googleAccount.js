@@ -9,7 +9,7 @@ const googleAccountSchema = new mongoose.Schema({
     },
     password: {
         type: String,
-        required: true
+        required: false
     },
     info: {
         type: String,

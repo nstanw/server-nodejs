@@ -5,7 +5,8 @@ const giaoDichSchema = new mongoose.Schema({
   isNo: { type: Boolean, required: false },
   soGold: { type: Number, required: true },
   soTien: { type: Number, required: true },
-  loaiChuyenKhoan: { type: String, required: true },
+  soTienNo: { type: Number, required: false },
+  loaiChuyenKhoan: { type: String, required: false },
   user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
   googleAccount: [
     {
