@@ -29,7 +29,6 @@ exports.getAllGiaoDich = async (req, res) => {
     if (req.query.startDate && req.query.endDate) {
       const startDate = new Date(req.query.startDate).setHours(0, 0, 0, 0);
       const endDate = new Date(req.query.endDate).setHours(23, 59, 59, 999);
-
       query = {
         ngayGiaoDich: {
           $gte: startDate,
@@ -37,20 +36,24 @@ exports.getAllGiaoDich = async (req, res) => {
         },
       };
     } else {
-      // const currentDate = new Date().setHours(0, 0, 0, 0);
-
-      // query = {
-      //   ngayGiaoDich: {
-      //     $gte: currentDate,
-      //     $lte: currentDate,
-      //   },
-      // };
+      const currentDate = new Date().setHours(0, 0, 0, 0);
+      query = {
+        ngayGiaoDich: {
+          $gte: currentDate,
+          $lte: currentDate,
+        },
+      };
     }
+
+    const sortField = req.query.sortField || 'ngayGiaoDich';
+    const sortOrder = req.query.sortOrder === 'asc' ? 1 : -1;
+    const sortQuery = {};
+    sortQuery[sortField] = sortOrder;
 
     const giaoDichs = await GiaoDich.find(query)
       .populate("user")
       .populate("googleAccount")
-      .sort({ ngayGiaoDich: -1 });
+      .sort(sortQuery);
     res.send(giaoDichs);
   } catch (error) {
     console.log(error);

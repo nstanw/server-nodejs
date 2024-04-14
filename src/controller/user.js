@@ -2,8 +2,17 @@ const User = require("../model/user");
 
 exports.getAllUser = async (req, res, next) => {
   try {
-    const users = await User.find();
-    res.json(users);
+
+    const limit = parseInt(req.query.limit) || 500;
+    const searchTerm = req.query.q || '';
+
+    const users = await User.find().limit(limit).sort({ createdAt: -1 });
+
+    if (!searchTerm) {
+      return res.json(users);
+    } else {
+      return res.json(users.filter(user => user.fullName.toLowerCase().includes(searchTerm.toLowerCase())));
+    }
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
