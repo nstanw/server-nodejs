@@ -12,6 +12,7 @@ exports.getGiaoDichByUser = async (req, res) => {
     }
     const giaoDichs = await GiaoDich.find(query)
       .populate("googleAccount")
+      .populate("user")
       .sort({ ngayGiaoDich: -1 });
     res.send(giaoDichs);
   } catch (error) {
