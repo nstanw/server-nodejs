@@ -1,6 +1,8 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const GiaoDich = require("./model/giaoDich");
+const randomInRange = require("./utils/randomInRange");
+
 
 const cord = require("cors");
 const port = 5000;
@@ -74,82 +76,13 @@ app.use(express.urlencoded({ extended: true }));
 const userRouter = require("./routes/user");
 const giaoDichRouter = require("./routes/giaoDich");
 const googleAccountsRouter = require("./routes/googleAccounts");
+const goldRouter = require("./routes/gold");
+
 
 app.use("/api/users", userRouter);
 app.use("/api/giaoDichs", giaoDichRouter);
 app.use("/api/googleAccounts", googleAccountsRouter);
-
-function randomInRange(x) {
-  let min = x * 1000;
-  let max = x * 1000 + 999;
-  return Math.floor(Math.random() * (max - min + 1) + min);
-}
-
-let gold = 10;
-let goldValue = randomInRange(gold);
-console.log(goldValue);
-
-let isDone = false;
-if (isDone) {
-  goldValue = 0;
-  console.log("Đã reset gold value về 0");
-}
-
-app.use("/", (req, res, next) => {
-  if (req.url === "/get_vg_store_items/user_account") {
-    console.log(req.query);
-    const install_id = req.query.install_id;
-    const xmlContent = `<?xml version="1.0" encoding="UTF-8"?>
-    <TapjoyConnectReturnObject>
-        <UserAccountObject>
-            <TapPoints>
-                ${goldValue}
-            </TapPoints>
-            <CurrencyName>
-                Golden Credits
-            </CurrencyName>
-            <PointsID>
-                ${install_id}
-            </PointsID>
-        </UserAccountObject>
-        <Success>
-                true
-        </Success>
-    </TapjoyConnectReturnObject>`;
-    res.writeHead(200, { "Content-Type": "application/xml" });
-    res.end(xmlContent); // send xmlContent as the response body
-    console.log("Số gold chuẩn bị cày là: " + goldValue);
-  } else if (req.url === "/get_vg_store_items/user_account") {
-    const install_id = req.query.install_id;
-    const xmlContent = `<?xml version="1.0" encoding="UTF-8"?>
-    <TapjoyConnectReturnObject>
-        <UserAccountObject>
-            <TapPoints>
-                0
-            </TapPoints>
-            <CurrencyName>
-                Golden Credits
-            </CurrencyName>
-            <PointsID>
-                ${install_id}
-            </PointsID>
-        </UserAccountObject>
-        <Success>
-            true
-        </Success>
-        <Message>
-            You successfully spent  ${goldValue} points
-        </Message>
-    </TapjoyConnectReturnObject>`;
-
-    res.writeHead(200, { "Content-Type": "application/xml" });
-    res.end(xmlContent);
-    console.log("Hoàn thành cày godld: " + goldValue);
-    isDone = true;
-  } else {
-    next();
-  }
-});
+app.use("/", goldRouter);
 
 const startServer = async () => {
   try {
