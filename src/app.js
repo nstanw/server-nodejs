@@ -86,7 +86,7 @@ app.use("/", goldRouter);
 
 const startServer = async () => {
   try {
-    // await mongoose.connect(uri);
+    await mongoose.connect(uri);
     console.log("Database connected");
     app.listen(port, () => {
       console.log("Server is running on http://localhost:" + port);
